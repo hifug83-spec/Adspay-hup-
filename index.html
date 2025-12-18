@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADSPAY ELITE - OFFICIAL</title>
+    <title>ADSPAY ELITE - GLOBAL VERSION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -11,157 +11,327 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #0f172a; color: white; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .btn-grad { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.5); }
-        .animate-slide-up { animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        body { font-family: 'Outfit', sans-serif; background: #010208; color: white; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gold-grad { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .btn-grad { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #d946ef 100%); transition: 0.4s; }
+        .card-anim { transition: 0.3s; }
+        .card-anim:active { transform: scale(0.96); }
+        .hidden { display: none; }
+        ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-5">
+<body class="flex flex-col items-center pb-24">
 
-    <div class="w-full max-w-md flex justify-between items-center mb-8 animate-slide-up">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full btn-grad flex items-center justify-center font-bold text-lg">A</div>
-            <div>
-                <h1 class="text-xl font-black tracking-tight leading-none">ADSPAY ELITE</h1>
-                <p class="text-[10px] text-indigo-400 font-medium uppercase tracking-widest mt-1" id="userEmail">Loading...</p>
+    <div id="authSection" class="w-full max-w-md p-8 mt-10">
+        <div class="flex flex-col items-center mb-10">
+            <div class="w-20 h-20 rounded-[2rem] btn-grad flex items-center justify-center shadow-[0_0_50px_-10px_#6366f1] mb-4">
+                <i data-lucide="zap" class="w-10 h-10 text-white fill-white"></i>
             </div>
+            <h1 class="text-4xl font-black tracking-tighter italic">ADSPAY <span class="text-indigo-500">ELITE</span></h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-[0.5em] mt-1">Earn Beyond Limits</p>
         </div>
-        <button onclick="logout()" class="w-10 h-10 glass rounded-xl flex items-center justify-center text-red-400"><i data-lucide="log-out" class="w-5"></i></button>
-    </div>
-
-    <div class="w-full max-w-md glass rounded-[2.5rem] p-8 mb-6 text-center animate-slide-up" style="animation-delay: 0.1s">
-        <span class="text-xs font-semibold text-gray-500 uppercase tracking-widest">Available Balance</span>
-        <div class="flex items-center justify-center gap-2 mt-2">
-            <span class="text-5xl font-black tracking-tighter">৳</span>
-            <span class="text-6xl font-black tracking-tighter" id="balance">0.00</span>
-        </div>
-        <div class="mt-6 flex gap-2 justify-center">
-            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/20 uppercase">Verified Account</span>
+        
+        <div class="glass p-8 rounded-[3rem] space-y-4">
+            <h2 id="authTitle" class="text-xl font-bold text-center">Welcome Back</h2>
+            <input type="email" id="email" placeholder="Email Address" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 focus:border-indigo-500 transition">
+            <input type="password" id="password" placeholder="Password" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 focus:border-indigo-500 transition">
+            <div id="signupExtra" class="hidden"><input type="text" id="referBy" placeholder="Referral Code (Optional)" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 mt-2"></div>
+            <button onclick="handleAuth()" id="mainBtn" class="w-full btn-grad p-5 rounded-2xl font-black uppercase tracking-widest mt-4">Login</button>
+            <button onclick="toggleAuth()" id="toggleBtn" class="w-full text-[10px] text-gray-500 mt-4 uppercase font-bold tracking-widest">Create New Account</button>
         </div>
     </div>
 
-    <div id="homeSection" class="w-full max-w-md grid grid-cols-2 gap-4 mb-8 animate-slide-up" style="animation-delay: 0.2s">
-        <button onclick="watchAd()" class="glass p-6 rounded-[2rem] flex flex-col items-center hover:bg-white/5 transition-all group">
-            <div class="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 mb-3 group-hover:scale-110 transition-transform">
-                <i data-lucide="play" class="fill-current"></i>
+    <div id="mainSection" class="hidden w-full max-w-md p-4">
+        
+        <div class="flex justify-between items-center mb-8 px-2">
+            <div onclick="showPage('profile')" class="flex items-center gap-3 cursor-pointer">
+                <img id="userImg" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-white/10">
+                <div>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Rank: <span class="text-indigo-400">Elite Partner</span></p>
+                    <span id="userDisplay" class="text-sm font-black italic">User</span>
+                </div>
             </div>
-            <span class="text-sm font-bold">Watch Ads</span>
-            <span class="text-[10px] text-gray-500 mt-1">Earn ৳ 2.50</span>
-        </button>
-        <button onclick="showSection('withdraw')" class="glass p-6 rounded-[2rem] flex flex-col items-center hover:bg-white/5 transition-all group">
-            <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 mb-3 group-hover:scale-110 transition-transform">
-                <i data-lucide="landmark"></i>
+            <div class="flex gap-2">
+                <button onclick="showPage('support')" class="p-3 glass rounded-2xl text-white"><i data-lucide="bell" class="w-5 h-5"></i></button>
+                <button onclick="logout()" class="p-3 glass rounded-2xl text-red-500"><i data-lucide="power" class="w-5 h-5"></i></button>
             </div>
-            <span class="text-sm font-bold">Withdraw</span>
-            <span class="text-[10px] text-gray-500 mt-1">Instant Pay</span>
-        </button>
-    </div>
-
-    <div id="withdrawSection" class="hidden w-full max-w-md glass rounded-[2.5rem] p-8 animate-slide-up">
-        <h2 class="text-2xl font-black mb-6">Withdraw Money</h2>
-        <div class="space-y-4">
-            <div>
-                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Select Method</label>
-                <select id="method" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mt-1 text-white outline-none">
-                    <option class="bg-slate-900" value="Bkash">Bkash (Personal)</option>
-                    <option class="bg-slate-900" value="Nagad">Nagad (Personal)</option>
-                </select>
-            </div>
-            <div>
-                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Amount</label>
-                <input type="number" id="amount" placeholder="Min 50 TK" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mt-1 text-white outline-none">
-            </div>
-            <div>
-                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Account Number</label>
-                <input type="text" id="phone" placeholder="017XXXXXXXX" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mt-1 text-white outline-none">
-            </div>
-            <button onclick="submitWithdraw()" class="w-full btn-grad p-5 rounded-2xl font-black text-sm uppercase tracking-widest mt-4">Confirm Withdraw</button>
-            <button onclick="showSection('home')" class="w-full text-gray-500 font-bold text-xs uppercase py-2">Back to Home</button>
         </div>
+
+        <div id="homePage" class="space-y-6">
+            <div class="glass rounded-[3.5rem] p-10 text-center relative overflow-hidden border-t border-white/10">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/20 blur-[50px]"></div>
+                <p class="text-[10px] text-indigo-300 font-black uppercase tracking-widest mb-2">Main Wallet</p>
+                <h2 class="text-6xl font-black tracking-tighter italic">৳ <span id="balance">0.00</span></h2>
+                <div class="flex justify-center gap-4 mt-8">
+                    <button onclick="showPage('addBalance')" class="btn-grad px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest">Deposit</button>
+                    <button onclick="showPage('withdraw')" class="glass px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest border border-white/10">Withdraw</button>
+                </div>
+            </div>
+
+            <h3 class="text-xs font-black uppercase tracking-widest px-2 text-gray-500">Premium Tasks</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="watchAd()" class="glass p-8 rounded-[2.5rem] card-anim flex flex-col items-center group">
+                    <div class="p-4 bg-indigo-500/10 rounded-3xl mb-3 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition"><i data-lucide="tv"></i></div>
+                    <span class="text-[10px] font-black uppercase">Watch & Earn</span>
+                    <span class="text-[8px] text-emerald-500 mt-1">৳ 2.50 per Ad</span>
+                </button>
+                <button onclick="showPage('affiliate')" class="glass p-8 rounded-[2.5rem] card-anim flex flex-col items-center group border-emerald-500/10">
+                    <div class="p-4 bg-emerald-500/10 rounded-3xl mb-3 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition"><i data-lucide="layers"></i></div>
+                    <span class="text-[10px] font-black uppercase">Affiliate</span>
+                    <span class="text-[8px] text-emerald-500 mt-1">10% Commission</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 px-2">
+                <div onclick="alert('Join our community to know about us.')" class="glass p-4 rounded-2xl text-center cursor-pointer">
+                    <i data-lucide="info" class="w-4 h-4 mx-auto mb-1 text-gray-400"></i>
+                    <p class="text-[8px] font-bold uppercase">About</p>
+                </div>
+                <div onclick="alert('Your data is 100% encrypted with Firebase.')" class="glass p-4 rounded-2xl text-center cursor-pointer">
+                    <i data-lucide="shield-check" class="w-4 h-4 mx-auto mb-1 text-gray-400"></i>
+                    <p class="text-[8px] font-bold uppercase">Privacy</p>
+                </div>
+                <div onclick="showPage('support')" class="glass p-4 rounded-2xl text-center cursor-pointer">
+                    <i data-lucide="heart" class="w-4 h-4 mx-auto mb-1 text-gray-400"></i>
+                    <p class="text-[8px] font-bold uppercase">Support</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="affiliatePage" class="hidden space-y-4">
+            <div class="glass p-8 rounded-[3rem] border-t border-emerald-500/20">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h2 class="text-2xl font-black italic">PARTNER<br>PROGRAM</h2>
+                        <p class="text-[10px] text-emerald-500 font-bold uppercase">Tier 1 Elite</p>
+                    </div>
+                    <i data-lucide="award" class="w-10 h-10 text-emerald-500"></i>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 p-5 rounded-3xl">
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">Total Referrals</p>
+                        <p class="text-2xl font-black" id="affRefers">0</p>
+                    </div>
+                    <div class="bg-white/5 p-5 rounded-3xl">
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">Commissions</p>
+                        <p class="text-2xl font-black text-emerald-500">৳ <span id="affComm">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="glass p-8 rounded-[3rem] space-y-4">
+                <h3 class="text-xs font-black uppercase tracking-widest text-center">Your Growth Link</h3>
+                <div class="bg-black p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-center text-indigo-400 break-all" id="affLink">---</div>
+                <button onclick="copyAffLink()" class="w-full btn-grad p-5 rounded-2xl font-black text-xs uppercase tracking-widest">Copy Invitation Link</button>
+            </div>
+            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase py-4">Back to Dashboard</button>
+        </div>
+
+        <div id="withdrawPage" class="hidden glass p-8 rounded-[3rem] space-y-6">
+            <div class="text-center">
+                <h2 class="text-2xl font-black italic uppercase">Withdraw</h2>
+                <p class="text-[10px] text-gray-500">Fast processing: 1-12 Hours</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="setMethod('Bkash')" id="btnBkash" class="flex-1 p-5 rounded-3xl border border-white/10 text-[10px] font-black uppercase transition">BKASH</button>
+                <button onclick="setMethod('Nagad')" id="btnNagad" class="flex-1 p-5 rounded-3xl border border-white/10 text-[10px] font-black uppercase transition">NAGAD</button>
+            </div>
+            <input type="number" id="wAmt" placeholder="Minimum 50 TK" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 text-center font-bold">
+            <input type="text" id="wPh" placeholder="01XXXXXXXXX" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 text-center font-bold">
+            <button onclick="handleWithdraw()" class="w-full btn-grad p-5 rounded-2xl font-black uppercase tracking-widest">Confirm Cashout</button>
+            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase">Cancel</button>
+        </div>
+
+        <div id="supportPage" class="hidden space-y-4">
+            <div class="glass p-8 rounded-[3rem] text-center">
+                <h2 class="text-2xl font-black italic uppercase mb-2">Connect</h2>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Join our community</p>
+                <div class="grid grid-cols-1 gap-3 mt-8">
+                    <a href="#" class="flex items-center justify-between p-5 bg-[#0088cc]/10 rounded-2xl border border-[#0088cc]/20 text-[#0088cc]">
+                        <span class="font-black text-xs uppercase italic">Telegram Channel</span>
+                        <i data-lucide="send"></i>
+                    </a>
+                    <a href="#" class="flex items-center justify-between p-5 bg-[#25D366]/10 rounded-2xl border border-[#25D366]/20 text-[#25D366]">
+                        <span class="font-black text-xs uppercase italic">WhatsApp Group</span>
+                        <i data-lucide="message-circle"></i>
+                    </a>
+                    <a href="#" class="flex items-center justify-between p-5 bg-[#FF0000]/10 rounded-2xl border border-[#FF0000]/20 text-[#FF0000]">
+                        <span class="font-black text-xs uppercase italic">Tutorials</span>
+                        <i data-lucide="youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase py-4">Back</button>
+        </div>
+
+        <div id="profilePage" class="hidden space-y-6 text-center">
+            <div class="glass p-10 rounded-[4rem] relative overflow-hidden">
+                <div class="absolute inset-0 bg-indigo-500/5"></div>
+                <img id="profileImg" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-24 h-24 rounded-[2rem] mx-auto mb-4 border-2 border-indigo-500 shadow-2xl relative">
+                <h3 id="profileName" class="text-2xl font-black italic">---</h3>
+                <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Verified AdsPay Partner</p>
+                
+                <div class="mt-8 pt-8 border-t border-white/5 space-y-4">
+                    <div class="flex justify-between text-[10px] font-bold uppercase px-4">
+                        <span class="text-gray-500">Account ID:</span>
+                        <span id="myReferCode" class="text-indigo-400 tracking-widest">---</span>
+                    </div>
+                    <div class="flex justify-between text-[10px] font-bold uppercase px-4">
+                        <span class="text-gray-500">Security:</span>
+                        <span class="text-emerald-500">Encrypted</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase">Return Home</button>
+        </div>
+
+        <div id="addBalancePage" class="hidden glass p-8 rounded-[3rem] space-y-6">
+            <h2 class="text-2xl font-black italic text-center uppercase">Deposit</h2>
+            <div class="bg-indigo-500/10 p-5 rounded-3xl border border-indigo-500/20">
+                <p class="text-[10px] text-indigo-300 font-bold uppercase mb-1">Admin Number (Personal)</p>
+                <p class="text-xl font-black tracking-widest">017XXXXXXXX</p>
+            </div>
+            <input type="number" id="depAmt" placeholder="Amount" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold">
+            <input type="text" id="trxid" placeholder="Transaction ID (TrxID)" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold uppercase">
+            <button onclick="handleDeposit()" class="w-full btn-grad p-5 rounded-2xl font-black uppercase tracking-widest">Submit Transaction</button>
+            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase">Cancel</button>
+        </div>
+
     </div>
 
     <script>
-        // আপনার প্রোজেক্টের তথ্য অনুযায়ী আপডেট করা হয়েছে
+        // CONFIG - আপনার Firebase Info
         const firebaseConfig = {
-            apiKey: "AIzaSyCx...", // আমি আপনার আগের স্ক্রিনশট থেকে এটি সেট করেছি
+            apiKey: "AIzaSyATr7aDNNsydceq_Z_5SuW4gIyFchPEm4A",
             authDomain: "adspay-hup.firebaseapp.com",
             databaseURL: "https://adspay-hup-default-rtdb.firebaseio.com",
             projectId: "adspay-hup",
-            storageBucket: "adspay-hup.appspot.com",
-            messagingSenderId: "7880...",
-            appId: "1:7880..."
+            storageBucket: "adspay-hup.firebasestorage.app",
+            messagingSenderId: "250165529622",
+            appId: "1:250165529622:web:35f1307b0acafb182bf937"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('userEmail').innerText = user.email;
-                loadBalance(user.uid);
+        let isLogin = true;
+        let selectedMethod = 'Bkash';
+
+        // UI ACTIONS
+        function toggleAuth() {
+            isLogin = !isLogin;
+            document.getElementById('authTitle').innerText = isLogin ? "Welcome Back" : "Join the Elite";
+            document.getElementById('mainBtn').innerText = isLogin ? "Login" : "Sign Up";
+            document.getElementById('signupExtra').classList.toggle('hidden');
+        }
+
+        function showPage(p) {
+            ['homePage','withdrawPage','supportPage','affiliatePage','profilePage','addBalancePage'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(p + 'Page').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function setMethod(m) {
+            selectedMethod = m;
+            document.getElementById('btnBkash').style.background = m === 'Bkash' ? 'rgba(99, 102, 241, 0.2)' : 'transparent';
+            document.getElementById('btnBkash').style.borderColor = m === 'Bkash' ? '#6366f1' : 'rgba(255,255,255,0.1)';
+            document.getElementById('btnNagad').style.background = m === 'Nagad' ? 'rgba(99, 102, 241, 0.2)' : 'transparent';
+            document.getElementById('btnNagad').style.borderColor = m === 'Nagad' ? '#6366f1' : 'rgba(255,255,255,0.1)';
+        }
+
+        // AUTH LOGIC
+        function handleAuth() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            const rb = document.getElementById('referBy').value;
+            if(!e || !p) return alert("Enter Details");
+
+            if(isLogin) {
+                auth.signInWithEmailAndPassword(e,p).catch(err => alert(err.message));
             } else {
-                window.location.href = "index.html";
+                auth.createUserWithEmailAndPassword(e,p).then(res => {
+                    const code = Math.random().toString(36).substring(2,7).toUpperCase();
+                    db.ref('users/' + res.user.uid).set({
+                        email: e, balance: 0, myReferCode: code, referBy: rb || "none", affEarnings: 0, refCount: 0, level: 1
+                    });
+                    if(rb) giveReferBonus(rb.toUpperCase());
+                }).catch(err => alert(err.message));
+            }
+        }
+
+        function giveReferBonus(code) {
+            db.ref('users').orderByChild('myReferCode').equalTo(code).once('value', s => {
+                if(s.exists()) {
+                    const uid = Object.keys(s.val())[0];
+                    db.ref('users/' + uid + '/balance').transaction(b => (b || 0) + 10);
+                    db.ref('users/' + uid + '/refCount').transaction(c => (c || 0) + 1);
+                    db.ref('users/' + uid + '/affEarnings').transaction(a => (a || 0) + 10);
+                }
+            });
+        }
+
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('mainSection').classList.remove('hidden');
+                document.getElementById('userDisplay').innerText = user.email.split('@')[0].toUpperCase();
+                document.getElementById('profileName').innerText = user.email.split('@')[0].toUpperCase();
+                
+                db.ref('users/' + user.uid).on('value', snap => {
+                    const d = snap.val();
+                    if(d) {
+                        document.getElementById('balance').innerText = (d.balance || 0).toFixed(2);
+                        document.getElementById('myReferCode').innerText = d.myReferCode;
+                        document.getElementById('affComm').innerText = (d.affEarnings || 0).toFixed(2);
+                        document.getElementById('affRefers').innerText = d.refCount || 0;
+                        document.getElementById('affLink').innerText = window.location.origin + "/?ref=" + d.myReferCode;
+                    }
+                });
+            } else {
+                document.getElementById('authSection').classList.remove('hidden');
+                document.getElementById('mainSection').classList.add('hidden');
             }
         });
 
-        function loadBalance(uid) {
-            db.ref('users/' + uid + '/balance').on('value', snap => {
-                document.getElementById('balance').innerText = snap.val() || "0.00";
-            });
-        }
-
-        function showSection(section) {
-            if(section === 'withdraw') {
-                document.getElementById('homeSection').classList.add('hidden');
-                document.getElementById('withdrawSection').classList.remove('hidden');
-            } else {
-                document.getElementById('homeSection').classList.remove('hidden');
-                document.getElementById('withdrawSection').classList.add('hidden');
-            }
-        }
-
+        // EARNINGS
         function watchAd() {
-            const uid = auth.currentUser.uid;
-            alert("Reward: 2.50 TK Added!");
-            db.ref('users/' + uid + '/balance').transaction(current => (current || 0) + 2.5);
+            alert("Streaming Ad... Get ৳ 2.50 Reward!");
+            db.ref('users/' + auth.currentUser.uid + '/balance').transaction(b => (b || 0) + 2.5);
         }
 
-        function submitWithdraw() {
-            const user = auth.currentUser;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const phone = document.getElementById('phone').value;
-            const method = document.getElementById('method').value;
-
-            if(amount < 50 || isNaN(amount)) return alert("Minimum withdrawal is 50 TK");
-            if(phone.length < 11) return alert("Enter a valid phone number");
-
-            // ব্যালেন্স চেক এবং আপডেট
-            db.ref('users/' + user.uid + '/balance').get().then(snap => {
-                const currentBalance = snap.val() || 0;
-                if(currentBalance < amount) return alert("Insufficient Balance!");
-
-                // রিকোয়েস্ট পাঠানো
-                db.ref('withdraw_requests').push({
-                    uid: user.uid,
-                    email: user.email,
-                    amount: amount,
-                    phone: phone,
-                    method: method,
-                    status: 'pending',
-                    timestamp: Date.now()
-                }).then(() => {
-                    db.ref('users/' + user.uid + '/balance').set(currentBalance - amount);
-                    alert("Success! Payment processing starts now.");
-                    showSection('home');
-                });
+        function handleWithdraw() {
+            const amt = parseFloat(document.getElementById('wAmt').value);
+            const ph = document.getElementById('wPh').value;
+            if(amt < 50) return alert("Min Withdraw 50 TK");
+            db.ref('users/' + auth.currentUser.uid + '/balance').get().then(s => {
+                if(s.val() >= amt) {
+                    db.ref('withdraws').push({ uid: auth.currentUser.uid, email: auth.currentUser.email, amt, ph, method: selectedMethod, status: 'pending', time: Date.now() });
+                    db.ref('users/' + auth.currentUser.uid + '/balance').set(s.val() - amt);
+                    alert("Request Placed Successfully!"); showPage('home');
+                } else alert("Insufficient Balance");
             });
+        }
+
+        function handleDeposit() {
+            const amt = document.getElementById('depAmt').value;
+            const trx = document.getElementById('trxid').value;
+            if(!amt || !trx) return alert("Enter Deposit Data");
+            db.ref('deposits').push({ uid: auth.currentUser.uid, email: auth.currentUser.email, amt, trx, status: 'pending' });
+            alert("Deposit submitted! Admin will verify soon.");
+            showPage('home');
+        }
+
+        function copyAffLink() {
+            navigator.clipboard.writeText(document.getElementById('affLink').innerText);
+            alert("Invitation Link Copied!");
         }
 
         function logout() { auth.signOut(); }
+        
         lucide.createIcons();
+        setMethod('Bkash');
     </script>
 </body>
 </html>
