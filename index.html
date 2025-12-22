@@ -127,7 +127,14 @@
             Welcome to Adspay Hup AI! Protidini income barate AI Mentor-er poramorsho nin.
         </marquee>
     </div>
-
+<div id="admin" class="page space-y-6">
+    <div class="flex justify-between items-center px-2">
+        <h1 class="text-2xl font-black text-red-500 uppercase italic">Master Control</h1>
+        <button onclick="showPage('home')" class="text-xs bg-slate-800 px-4 py-1 rounded-full text-slate-400">Exit Admin</button>
+    </div>
+    
+    ... (পুরো HTML কোডটি এখানে বসবে) ...
+</div>
     <main class="p-4">
         <div id="home" class="page active space-y-5">
             <div class="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 rounded-3xl shadow-2xl relative overflow-hidden">
@@ -348,9 +355,30 @@
         <button onclick="showPage('support')" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
             <i class="fas fa-circle-user"></i><span class="text-[10px] font-bold">Profile</span>
         </button>
-    </nav>
+    </nav> 
+    <button onclick="checkAdmin()" class="text-red-500 flex flex-col items-center">
+    <i class="fas fa-lock"></i>
+    <span class="text-[10px]">Admin</span>
+</button>
 
-    <script type="module">
+    <script type="module"> 
+        <script type="module">
+    // ... আপনার আগের কোডগুলো এখানে থাকবে ...
+
+    // অ্যাডমিন লজিক এখান থেকে শুরু হবে
+    window.checkAdmin = () => { 
+        const pin = prompt("🔐 ENTER MASTER ADMIN PIN:");
+        if(pin === "2025") {
+            showPage('admin'); 
+            loadAdminData(); 
+        } else if(pin !== null) {
+            alert("❌ Access Denied!");
+        }
+    };
+
+    // ... বাকি সব অ্যাডমিন ফাংশন (addTask, updateSettings, approveDep) এখানে বসবে ...
+
+</script>
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
