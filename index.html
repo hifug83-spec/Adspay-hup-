@@ -29,13 +29,30 @@
             -webkit-text-fill-color: transparent;
             position: relative;
         }
-        .logo-stylus::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #60a5fa; animation: drawLine 2s infinite alternate; }
+        .logo-stylus::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #60a5fa;
+            animation: drawLine 2s infinite alternate;
+        }
         @keyframes drawLine { to { width: 100%; } }
 
         .ad-slot {
-            margin: 15px 0; width: 100%; min-height: 80px; border-radius: 12px;
+            margin: 15px 0;
+            width: 100%;
+            min-height: 80px;
+            border-radius: 12px;
             background: repeating-linear-gradient(45deg, #0f172a, #0f172a 10px, #1e293b 10px, #1e293b 20px);
-            display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(255,255,255,0.1); position: relative; overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
         }
         .ad-slot::before { content: 'SPONSORED AD'; font-size: 8px; position: absolute; top: 2px; right: 5px; color: rgba(255,255,255,0.3); }
 
@@ -43,7 +60,20 @@
         .signature-font { font-family: 'Pacifico', cursive; }
         .nav-btn.active { color: #3b82f6; transform: translateY(-5px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        #health-monitor { position: fixed; bottom: 90px; right: 15px; z-index: 40; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 100px; font-size: 9px; display: flex; align-items: center; gap: 6px; }
+        #health-monitor {
+            position: fixed;
+            bottom: 90px;
+            right: 15px;
+            z-index: 40;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 100px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
     </style>
 </head>
 <body>
@@ -112,6 +142,10 @@
                 <i class="fas fa-coins absolute -right-4 -bottom-4 text-8xl text-white/5 rotate-12"></i>
             </div>
 
+            <div class="ad-slot" id="home-ad-slot">
+                <p class="text-[10px] text-slate-500 italic">Google Ads Placeholder / Banner Area</p>
+            </div>
+
             <button onclick="askAIMentor()" class="w-full ai-glow bg-slate-900 p-4 rounded-2xl flex items-center justify-between group transition">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-gradient-to-tr from-violet-600 to-fuchsia-500 rounded-xl flex items-center justify-center text-white shadow-lg">
@@ -148,6 +182,10 @@
                     <div class="text-right text-emerald-400 font-bold text-xs" id="label-ad-reward">+৳2.00</div>
                 </button>
 
+                <div class="ad-slot" id="task-ad-slot" style="min-height: 50px;">
+                    <p class="text-[9px] text-slate-600 italic">Native Ad Area</p>
+                </div>
+
                 <button onclick="startPremiumTask()" class="w-full bg-slate-800/40 p-4 rounded-2xl border border-white/5 flex items-center justify-between hover:bg-slate-800 transition">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400">
@@ -181,7 +219,121 @@
             </footer>
         </div>
 
-        </main>
+        <div id="deposit" class="page space-y-5">
+            <h2 class="text-2xl font-bold">Add Money</h2>
+            <div class="bg-slate-800/50 p-6 rounded-3xl border border-white/5 space-y-4">
+                <div class="p-4 bg-slate-900 rounded-2xl border border-white/5">
+                    <p class="text-[10px] text-slate-400 uppercase">Send Money to (Personal):</p>
+                    <div class="flex justify-between items-center mt-2">
+                        <span id="adm-pay-num-display" class="text-xl font-bold text-blue-400">017XXXXXXXX</span>
+                        <button onclick="copyAdminNum()" class="text-xs bg-blue-600 px-3 py-1 rounded-lg">Copy</button>
+                    </div>
+                </div>
+                <input id="dep-amount" type="number" placeholder="Amount" class="w-full bg-slate-900 border border-white/10 p-4 rounded-xl outline-none focus:border-emerald-500">
+                <input id="dep-trxid" type="text" placeholder="Transaction ID (TrxID)" class="w-full bg-slate-900 border border-white/10 p-4 rounded-xl outline-none focus:border-emerald-500">
+                <button onclick="requestDeposit()" class="w-full bg-emerald-600 py-4 rounded-xl font-black shadow-lg">Confirm Deposit</button>
+            </div>
+        </div>
+
+        <div id="wallet" class="page space-y-5">
+            <h2 class="text-2xl font-bold">Withdraw Funds</h2>
+            <div class="bg-slate-800/50 p-6 rounded-3xl space-y-4">
+                <div class="flex justify-between p-3 bg-black/20 rounded-xl text-xs">
+                    <span class="text-slate-400">Available Balance:</span>
+                    <span class="text-emerald-400 font-bold" id="wallet-bal">৳0.00</span>
+                </div>
+                <input id="pay-num" type="tel" placeholder="Account Number" class="w-full bg-slate-900 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500">
+                <input id="pay-amount" type="number" placeholder="Amount (Minimum 100)" class="w-full bg-slate-900 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500">
+                <button onclick="requestWithdraw()" class="w-full bg-blue-600 py-4 rounded-xl font-black shadow-lg">Submit Withdrawal</button>
+            </div>
+        </div>
+
+        <div id="affiliate" class="page space-y-5">
+            <h2 class="text-2xl font-bold">Refer & Earn</h2>
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+                <div class="bg-indigo-600/20 p-4 rounded-2xl border border-indigo-500/30">
+                    <p class="text-[10px] text-indigo-300 uppercase font-black">Your Referral Link:</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <input id="referral-link" readonly type="text" value="Loading..." class="text-xs flex-1 bg-black/40 p-2 rounded-lg border-none">
+                        <button onclick="copyReferral()" class="bg-indigo-600 p-2 rounded-lg text-xs font-bold">Copy</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-slate-400 uppercase">Total Refer</p>
+                        <p id="total-refers" class="text-xl font-black text-white">0</p>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-slate-400 uppercase">Refer Bonus</p>
+                        <p id="total-ref-bonus" class="text-xl font-black text-emerald-400">৳0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="support" class="page space-y-6">
+            <div class="flex items-center gap-4 p-4 glass-card rounded-3xl">
+                <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg" id="profile-id-display">User ID: ...</h3>
+                    <p class="text-xs text-emerald-400" id="profile-status">Status: Active AI Member</p>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <button onclick="showLegal('about')" class="w-full p-4 glass-card rounded-2xl flex justify-between items-center">
+                    <span class="text-sm font-bold"><i class="fas fa-info-circle mr-2 text-blue-400"></i> About Us</span>
+                    <i class="fas fa-chevron-right text-[10px]"></i>
+                </button>
+                <button onclick="showLegal('privacy')" class="w-full p-4 glass-card rounded-2xl flex justify-between items-center">
+                    <span class="text-sm font-bold"><i class="fas fa-user-shield mr-2 text-blue-400"></i> Privacy Policy</span>
+                    <i class="fas fa-chevron-right text-[10px]"></i>
+                </button>
+                <a href="https://t.me/AdspayHup" class="flex items-center justify-between p-4 glass-card rounded-2xl">
+                    <div class="flex items-center gap-3">
+                        <i class="fab fa-telegram text-2xl text-blue-400"></i>
+                        <span class="text-sm font-bold">Official Telegram</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="p-6 glass-card rounded-3xl text-center">
+                <span class="signature-font text-2xl text-white">Sakib Madbor</span>
+                <p class="text-[10px] text-slate-500 mt-2">© 2025 Adspay Hup Enterprise</p>
+            </div>
+        </div>
+
+        <div id="admin" class="page space-y-5">
+            <h2 class="text-2xl font-bold text-red-500">Admin Control</h2>
+            <div class="bg-slate-800 p-6 rounded-3xl space-y-4">
+                <div id="admin-health-box" class="p-3 bg-black/40 rounded-xl flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">System Status</span>
+                    <span id="admin-health-label" class="text-[10px] font-bold text-emerald-400">ONLINE</span>
+                </div>
+                <textarea id="adm-news-input" class="w-full bg-slate-900 p-3 rounded-xl text-sm h-20" placeholder="News Update"></textarea>
+                <input id="adm-video-rew" type="number" class="w-full bg-slate-900 p-3 rounded-xl" placeholder="Ad Reward">
+                <input id="adm-pay-num-input" type="text" class="w-full bg-slate-900 p-3 rounded-xl" placeholder="Payment Number">
+                <button onclick="updateSystem()" class="w-full bg-red-600 py-4 rounded-xl font-bold">Save Changes</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="ad-view" class="fixed inset-0 z-[100] bg-slate-950 hidden flex flex-col items-center justify-center p-6 text-center">
+        <div id="ad-loader" class="space-y-6">
+            <div class="relative w-32 h-32 mx-auto">
+                <svg class="w-full h-full transform -rotate-90">
+                    <circle cx="64" cy="64" r="60" stroke="#1e293b" stroke-width="8" fill="transparent"></circle>
+                    <circle id="timer-bar" cx="64" cy="64" r="60" stroke="#3b82f6" stroke-width="8" fill="transparent" stroke-dasharray="377" stroke-dashoffset="0" class="transition-all duration-1000"></circle>
+                </svg>
+                <div id="timer-num" class="absolute inset-0 flex items-center justify-center text-3xl font-black">30</div>
+            </div>
+            <p class="text-slate-500">Ad dekhun reward-er jonno...</p>
+        </div>
+        <button id="claim-btn" class="hidden w-full max-w-sm bg-emerald-600 py-5 rounded-2xl font-black text-xl">CLAIM REWARD</button>
+    </div>
 
     <nav class="fixed bottom-0 inset-x-0 glass h-20 px-4 flex items-center justify-around z-50">
         <button onclick="showPage('home')" class="nav-btn flex flex-col items-center gap-1 text-slate-400 active">
@@ -199,73 +351,175 @@
     </nav>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-        // Sothik Config bosano holo
+        const apiKey = "AIzaSyDHkr5a7OnGzy8Q_qJzy8qxcmBMkehGq58";
         const firebaseConfig = {
             apiKey: "AIzaSyATr7aDNNsydceq_Z_5SuW4gIyFchPEm4A",
             authDomain: "adspay-hup.firebaseapp.com",
-            databaseURL: "https://adspay-hup-default-rtdb.firebaseio.com",
             projectId: "adspay-hup",
             storageBucket: "adspay-hup.firebasestorage.app",
             messagingSenderId: "250165529622",
-            appId: "1:250165529622:web:57ed75a9e9dd23b42bf937",
-            measurementId: "G-DQ9MWB0QN5"
+            appId: "1:250165529622:web:57ed75a9e9dd23b42bf937"
         };
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const appId = 'adspay-hup-pro-v1';
-        const apiKey = "AIzaSyDHkr5a7OnGzy8Q_qJzy8qxcmBMkehGq58"; // Apnar deya API Key
 
         let userState = null;
         let userData = { balance: 0, ad_balance: 0, task_balance: 0, referCount: 0, referBonus: 0 };
+        let settings = { news: "Welcome!", videoReward: 2, premiumReward: 5, adminNum: "017XXXXXXXX" };
+
+        const updateHealth = (status, color) => {
+            const dot = document.getElementById('health-dot');
+            const ping = document.getElementById('health-ping');
+            const label = document.getElementById('health-status');
+            const adminLabel = document.getElementById('admin-health-label');
+            if(!dot || !label) return;
+            dot.className = `relative inline-flex rounded-full h-2 w-2 bg-${color}-500`;
+            ping.className = `animate-ping absolute inline-flex h-full w-full rounded-full bg-${color}-400 opacity-75`;
+            label.innerText = `System: ${status}`;
+            label.className = `text-${color}-400 font-bold uppercase tracking-tighter`;
+            if(adminLabel) adminLabel.innerText = status.toUpperCase();
+        };
+
+        window.callGemini = async (prompt, systemPrompt = "") => {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt || "Tumi Adspay Hup app-er AI Mentor." }] }
+            };
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "No AI response.";
+            } catch (e) { return "AI Currently Offline."; }
+        };
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 userState = user;
+                updateHealth('Healthy', 'emerald');
                 const userRef = doc(db, 'artifacts', appId, 'users', user.uid, 'account', 'data');
                 const snap = await getDoc(userRef);
-                if (!snap.exists()) await setDoc(userRef, { uid: user.uid, balance: 0, ad_balance: 0, task_balance: 0, referCount: 0, referBonus: 0 });
-
+                if (!snap.exists()) {
+                    await setDoc(userRef, { uid: user.uid, balance: 0, ad_balance: 0, task_balance: 0, referCount: 0, referBonus: 0, joined: new Date().toISOString() });
+                }
+                document.getElementById('profile-id-display').innerText = `ID: ${user.uid.substring(0, 15)}...`;
+                document.getElementById('referral-link').value = `https://adspayhup.pro/?ref=${user.uid}`;
                 onSnapshot(userRef, (d) => {
-                    userData = d.data();
-                    const b = userData.balance || 0;
-                    document.getElementById('top-balance').innerText = `৳${b.toFixed(2)}`;
-                    document.getElementById('home-total-bal').innerText = `৳${b.toFixed(2)}`;
-                    document.getElementById('home-ad-bal').innerText = `৳${(userData.ad_balance || 0).toFixed(2)}`;
-                    document.getElementById('home-task-bal').innerText = `৳${(userData.task_balance || 0).toFixed(2)}`;
+                    if(d.exists()){
+                        userData = d.data();
+                        document.getElementById('top-balance').innerText = `৳${(userData.balance || 0).toFixed(2)}`;
+                        document.getElementById('home-total-bal').innerText = `৳${(userData.balance || 0).toFixed(2)}`;
+                        document.getElementById('home-ad-bal').innerText = `৳${(userData.ad_balance || 0).toFixed(2)}`;
+                        document.getElementById('home-task-bal').innerText = `৳${(userData.task_balance || 0).toFixed(2)}`;
+                        document.getElementById('wallet-bal').innerText = `৳${(userData.balance || 0).toFixed(2)}`;
+                        document.getElementById('total-refers').innerText = userData.referCount || 0;
+                        document.getElementById('total-ref-bonus').innerText = `৳${(userData.referBonus || 0).toFixed(2)}`;
+                    }
+                });
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'global', 'settings'), (d) => {
+                    if (d.exists()) {
+                        settings = d.data();
+                        document.getElementById('main-news').innerText = settings.news;
+                        document.getElementById('adm-pay-num-display').innerText = settings.adminNum;
+                        document.getElementById('label-ad-reward').innerText = `+৳${(settings.videoReward || 2).toFixed(2)}`;
+                    }
                 });
             } else { signInAnonymously(auth); }
         });
 
-        window.callGemini = async (prompt) => {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })});
-                const result = await response.json();
-                return result.candidates?.[0]?.content?.parts?.[0]?.text || "AI offline.";
-            } catch (e) { return "Error connecting to AI."; }
+        window.showPage = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active', 'text-blue-400'));
+            const pg = document.getElementById(id);
+            if(pg) pg.classList.add('active');
+            const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(id));
+            if(btn) btn.classList.add('active', 'text-blue-400');
         };
 
         window.askAIMentor = async () => {
             document.getElementById('ai-mentor-box').style.display = 'flex';
-            const advice = await callGemini(`User has ৳${userData.balance}. Give Bengali tips to earn more.`);
+            document.getElementById('ai-response').innerText = "Analyzing your profile... ✨";
+            const advice = await callGemini(`User Balance: ${userData.balance}. Suggest some earning tips in Bengali.`);
             document.getElementById('ai-response').innerText = advice;
         };
 
-        window.showPage = (id) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        window.startVideoTask = () => {
+            const overlay = document.getElementById('ad-view');
+            const timerNum = document.getElementById('timer-num');
+            const timerBar = document.getElementById('timer-bar');
+            const claimBtn = document.getElementById('claim-btn');
+            const loader = document.getElementById('ad-loader');
+            overlay.classList.remove('hidden');
+            loader.classList.remove('hidden');
+            claimBtn.classList.add('hidden');
+            let count = 30;
+            const itv = setInterval(() => {
+                count--;
+                timerNum.innerText = count;
+                timerBar.style.strokeDashoffset = 377 - (377 * (30 - count) / 30);
+                if (count <= 0) { clearInterval(itv); loader.classList.add('hidden'); claimBtn.classList.remove('hidden'); }
+            }, 1000);
+            claimBtn.onclick = async () => {
+                const userRef = doc(db, 'artifacts', appId, 'users', userState.uid, 'account', 'data');
+                await updateDoc(userRef, { balance: increment(settings.videoReward || 2), ad_balance: increment(settings.videoReward || 2) });
+                overlay.classList.add('hidden');
+                alertMsg("Reward added!");
+            };
         };
 
+        window.startPremiumTask = async () => {
+            alertMsg("AI Task generating... ✨");
+            setTimeout(async () => {
+                const userRef = doc(db, 'artifacts', appId, 'users', userState.uid, 'account', 'data');
+                await updateDoc(userRef, { balance: increment(settings.premiumReward || 5), task_balance: increment(settings.premiumReward || 5) });
+                alertMsg("Premium reward added!");
+            }, 2000);
+        };
+
+        window.requestDeposit = async () => {
+            const amt = parseFloat(document.getElementById('dep-amount').value);
+            const trx = document.getElementById('dep-trxid').value;
+            if(!amt || !trx) return alertMsg("Enter all details!");
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), { uid: userState.uid, amount: amt, trxid: trx, status: 'pending', time: new Date().toISOString() });
+            alertMsg("Deposit request sent!"); showPage('home');
+        };
+
+        window.requestWithdraw = async () => {
+            const amt = parseFloat(document.getElementById('pay-amount').value);
+            const num = document.getElementById('pay-num').value;
+            if(amt < 100 || !num || userData.balance < amt) return alertMsg("Invalid amount/balance.");
+            await updateDoc(doc(db, 'artifacts', appId, 'users', userState.uid, 'account', 'data'), { balance: increment(-amt) });
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'withdraws'), { uid: userState.uid, amount: amt, number: num, status: 'pending', time: new Date().toISOString() });
+            alertMsg("Withdrawal request sent!"); showPage('home');
+        };
+
+        window.showLegal = (type) => {
+            let title = type === 'about' ? "About Us" : "Privacy Policy";
+            let text = type === 'about' ? "Adspay Hup is an AI-powered platform." : "Your data is safe with us.";
+            alertMsg(text);
+        };
+
+        window.alertMsg = (text) => { document.getElementById('msg-text').innerText = text; document.getElementById('msg-box').style.display = 'flex'; };
+        window.closeMsg = () => document.getElementById('msg-box').style.display = 'none';
         window.closeMentor = () => document.getElementById('ai-mentor-box').style.display = 'none';
-        setInterval(() => { document.getElementById('header-time').innerText = new Date().toLocaleTimeString(); }, 1000);
+        window.copyAdminNum = () => { navigator.clipboard.writeText(document.getElementById('adm-pay-num-display').innerText); alertMsg("Copied!"); };
+        window.copyReferral = () => { navigator.clipboard.writeText(document.getElementById('referral-link').value); alertMsg("Copied!"); };
+        window.checkAdminAccess = () => { if(prompt("ADMIN PIN:") === "2025") showPage('admin'); };
+        window.updateSystem = async () => {
+            const n = document.getElementById('adm-news-input').value;
+            const v = parseFloat(document.getElementById('adm-video-rew').value);
+            const num = document.getElementById('adm-pay-num-input').value;
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'global', 'settings'), { news: n, videoReward: v, premiumReward: 5, adminNum: num });
+            alertMsg("Updated!");
+        };
+        setInterval(() => { const el = document.getElementById('header-time'); if(el) el.innerText = new Date().toLocaleTimeString(); }, 1000);
     </script>
 </body>
 </html>
