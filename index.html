@@ -3,204 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADSPAY ELITE - GLOBAL VERSION</title>
+    <title>Adspay Hup AI Enterprise - Pro v2.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #010208; color: white; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .gold-grad { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-        .btn-grad { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #d946ef 100%); transition: 0.4s; }
-        .card-anim { transition: 0.3s; }
-        .card-anim:active { transform: scale(0.96); }
-        .hidden { display: none; }
-        ::-webkit-scrollbar { width: 0px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; margin: 0; overflow-x: hidden; }
+        .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.05); }
+        .page { display: none; min-height: 100vh; padding-bottom: 110px; }
+        .page.active { display: block; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .marquee-container { background: rgba(59, 130, 246, 0.1); border-top: 1px solid rgba(59, 130, 246, 0.2); border-bottom: 1px solid rgba(59, 130, 246, 0.2); }
+        .ai-glow { box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); border: 1px solid rgba(139, 92, 246, 0.5); }
+        input, textarea { background: #0f172a !important; color: white !important; }
+        
+        .logo-stylus {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        .logo-stylus::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #60a5fa; animation: drawLine 2s infinite alternate; }
+        @keyframes drawLine { to { width: 100%; } }
+
+        .ad-slot {
+            margin: 15px 0; width: 100%; min-height: 80px; border-radius: 12px;
+            background: repeating-linear-gradient(45deg, #0f172a, #0f172a 10px, #1e293b 10px, #1e293b 20px);
+            display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(255,255,255,0.1); position: relative; overflow: hidden;
+        }
+        .ad-slot::before { content: 'SPONSORED AD'; font-size: 8px; position: absolute; top: 2px; right: 5px; color: rgba(255,255,255,0.3); }
+
+        .custom-modal { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 20px; }
+        .signature-font { font-family: 'Pacifico', cursive; }
+        .nav-btn.active { color: #3b82f6; transform: translateY(-5px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        #health-monitor { position: fixed; bottom: 90px; right: 15px; z-index: 40; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 100px; font-size: 9px; display: flex; align-items: center; gap: 6px; }
     </style>
 </head>
-<body class="flex flex-col items-center pb-24">
+<body>
 
-    <div id="authSection" class="w-full max-w-md p-8 mt-10">
-        <div class="flex flex-col items-center mb-10">
-            <div class="w-20 h-20 rounded-[2rem] btn-grad flex items-center justify-center shadow-[0_0_50px_-10px_#6366f1] mb-4">
-                <i data-lucide="zap" class="w-10 h-10 text-white fill-white"></i>
-            </div>
-            <h1 class="text-4xl font-black tracking-tighter italic">ADSPAY <span class="text-indigo-500">ELITE</span></h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-[0.5em] mt-1">Earn Beyond Limits</p>
-        </div>
-        
-        <div class="glass p-8 rounded-[3rem] space-y-4">
-            <h2 id="authTitle" class="text-xl font-bold text-center">Welcome Back</h2>
-            <input type="email" id="email" placeholder="Email Address" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 focus:border-indigo-500 transition">
-            <input type="password" id="password" placeholder="Password" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 focus:border-indigo-500 transition">
-            <div id="signupExtra" class="hidden"><input type="text" id="referBy" placeholder="Referral Code (Optional)" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 mt-2"></div>
-            <button onclick="handleAuth()" id="mainBtn" class="w-full btn-grad p-5 rounded-2xl font-black uppercase tracking-widest mt-4">Login</button>
-            <button onclick="toggleAuth()" id="toggleBtn" class="w-full text-[10px] text-gray-500 mt-4 uppercase font-bold tracking-widest">Create New Account</button>
+    <div id="health-monitor">
+        <span class="flex h-2 w-2 relative">
+            <span id="health-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span id="health-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span id="health-status" class="text-slate-400 font-bold uppercase tracking-tighter">System: Healthy</span>
+    </div>
+
+    <div id="msg-box" class="custom-modal">
+        <div class="bg-slate-900 border border-slate-700 p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-2xl">
+            <h3 id="msg-title" class="font-bold text-blue-400 text-lg">System Alert</h3>
+            <p id="msg-text" class="text-sm text-slate-300"></p>
+            <button onclick="closeMsg()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-sm">OK</button>
         </div>
     </div>
 
-    <div id="mainSection" class="hidden w-full max-w-md p-4">
-        
-        <div class="flex justify-between items-center mb-8 px-2">
-            <div onclick="showPage('profile')" class="flex items-center gap-3 cursor-pointer">
-                <img id="userImg" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-white/10">
-                <div>
-                    <p class="text-[10px] text-gray-500 font-bold uppercase">Rank: <span class="text-indigo-400">Elite Partner</span></p>
-                    <span id="userDisplay" class="text-sm font-black italic">User</span>
+    <div id="ai-mentor-box" class="custom-modal">
+        <div class="bg-slate-900 border border-violet-500/50 p-6 rounded-3xl max-w-sm w-full space-y-4 shadow-2xl">
+            <div class="flex items-center gap-3 border-b border-white/5 pb-3">
+                <div class="w-10 h-10 bg-violet-600 rounded-full flex items-center justify-center animate-pulse">
+                    <i class="fas fa-robot text-white"></i>
                 </div>
+                <h3 class="font-bold text-lg text-violet-400">Gemini AI Mentor ✨</h3>
             </div>
-            <div class="flex gap-2">
-                <button onclick="showPage('support')" class="p-3 glass rounded-2xl text-white"><i data-lucide="bell" class="w-5 h-5"></i></button>
-                <button onclick="logout()" class="p-3 glass rounded-2xl text-red-500"><i data-lucide="power" class="w-5 h-5"></i></button>
+            <div id="ai-response" class="text-xs leading-relaxed text-slate-300 max-h-64 overflow-y-auto pr-2 italic">
+                Ami apnar data analyze korchi...
             </div>
+            <button onclick="closeMentor()" class="w-full bg-violet-600 py-3 rounded-xl font-bold text-sm">Dhonyobad Gemini</button>
         </div>
-
-        <div id="homePage" class="space-y-6">
-            <div class="glass rounded-[3.5rem] p-10 text-center relative overflow-hidden border-t border-white/10">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/20 blur-[50px]"></div>
-                <p class="text-[10px] text-indigo-300 font-black uppercase tracking-widest mb-2">Main Wallet</p>
-                <h2 class="text-6xl font-black tracking-tighter italic">৳ <span id="balance">0.00</span></h2>
-                <div class="flex justify-center gap-4 mt-8">
-                    <button onclick="showPage('addBalance')" class="btn-grad px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest">Deposit</button>
-                    <button onclick="showPage('withdraw')" class="glass px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest border border-white/10">Withdraw</button>
-                </div>
-            </div>
-
-            <h3 class="text-xs font-black uppercase tracking-widest px-2 text-gray-500">Premium Tasks</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="watchAd()" class="glass p-8 rounded-[2.5rem] card-anim flex flex-col items-center group">
-                    <div class="p-4 bg-indigo-500/10 rounded-3xl mb-3 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition"><i data-lucide="tv"></i></div>
-                    <span class="text-[10px] font-black uppercase">Watch & Earn</span>
-                    <span class="text-[8px] text-emerald-500 mt-1">৳ 2.50 per Ad</span>
-                </button>
-                <button onclick="showPage('affiliate')" class="glass p-8 rounded-[2.5rem] card-anim flex flex-col items-center group border-emerald-500/10">
-                    <div class="p-4 bg-emerald-500/10 rounded-3xl mb-3 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition"><i data-lucide="layers"></i></div>
-                    <span class="text-[10px] font-black uppercase">Affiliate</span>
-                    <span class="text-[8px] text-emerald-500 mt-1">10% Commission</span>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2 px-2">
-                <div onclick="alert('Join our community to know about us.')" class="glass p-4 rounded-2xl text-center cursor-pointer">
-                    <i data-lucide="info" class="w-4 h-4 mx-auto mb-1 text-gray-400"></i>
-                    <p class="text-[8px] font-bold uppercase">About</p>
-                </div>
-                <div onclick="alert('Your data is 100% encrypted with Firebase.')" class="glass p-4 rounded-2xl text-center cursor-pointer">
-                    <i data-lucide="shield-check" class="w-4 h-4 mx-auto mb-1 text-gray-400"></i>
-                    <p class="text-[8px] font-bold uppercase">Privacy</p>
-                </div>
-                <div onclick="showPage('support')" class="glass p-4 rounded-2xl text-center cursor-pointer">
-                    <i data-lucide="heart" class="w-4 h-4 mx-auto mb-1 text-gray-400"></i>
-                    <p class="text-[8px] font-bold uppercase">Support</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="affiliatePage" class="hidden space-y-4">
-            <div class="glass p-8 rounded-[3rem] border-t border-emerald-500/20">
-                <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <h2 class="text-2xl font-black italic">PARTNER<br>PROGRAM</h2>
-                        <p class="text-[10px] text-emerald-500 font-bold uppercase">Tier 1 Elite</p>
-                    </div>
-                    <i data-lucide="award" class="w-10 h-10 text-emerald-500"></i>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white/5 p-5 rounded-3xl">
-                        <p class="text-[9px] text-gray-400 uppercase font-bold">Total Referrals</p>
-                        <p class="text-2xl font-black" id="affRefers">0</p>
-                    </div>
-                    <div class="bg-white/5 p-5 rounded-3xl">
-                        <p class="text-[9px] text-gray-400 uppercase font-bold">Commissions</p>
-                        <p class="text-2xl font-black text-emerald-500">৳ <span id="affComm">0.00</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="glass p-8 rounded-[3rem] space-y-4">
-                <h3 class="text-xs font-black uppercase tracking-widest text-center">Your Growth Link</h3>
-                <div class="bg-black p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-center text-indigo-400 break-all" id="affLink">---</div>
-                <button onclick="copyAffLink()" class="w-full btn-grad p-5 rounded-2xl font-black text-xs uppercase tracking-widest">Copy Invitation Link</button>
-            </div>
-            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase py-4">Back to Dashboard</button>
-        </div>
-
-        <div id="withdrawPage" class="hidden glass p-8 rounded-[3rem] space-y-6">
-            <div class="text-center">
-                <h2 class="text-2xl font-black italic uppercase">Withdraw</h2>
-                <p class="text-[10px] text-gray-500">Fast processing: 1-12 Hours</p>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="setMethod('Bkash')" id="btnBkash" class="flex-1 p-5 rounded-3xl border border-white/10 text-[10px] font-black uppercase transition">BKASH</button>
-                <button onclick="setMethod('Nagad')" id="btnNagad" class="flex-1 p-5 rounded-3xl border border-white/10 text-[10px] font-black uppercase transition">NAGAD</button>
-            </div>
-            <input type="number" id="wAmt" placeholder="Minimum 50 TK" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 text-center font-bold">
-            <input type="text" id="wPh" placeholder="01XXXXXXXXX" class="w-full bg-white/5 p-5 rounded-2xl outline-none border border-white/10 text-center font-bold">
-            <button onclick="handleWithdraw()" class="w-full btn-grad p-5 rounded-2xl font-black uppercase tracking-widest">Confirm Cashout</button>
-            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase">Cancel</button>
-        </div>
-
-        <div id="supportPage" class="hidden space-y-4">
-            <div class="glass p-8 rounded-[3rem] text-center">
-                <h2 class="text-2xl font-black italic uppercase mb-2">Connect</h2>
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Join our community</p>
-                <div class="grid grid-cols-1 gap-3 mt-8">
-                    <a href="#" class="flex items-center justify-between p-5 bg-[#0088cc]/10 rounded-2xl border border-[#0088cc]/20 text-[#0088cc]">
-                        <span class="font-black text-xs uppercase italic">Telegram Channel</span>
-                        <i data-lucide="send"></i>
-                    </a>
-                    <a href="#" class="flex items-center justify-between p-5 bg-[#25D366]/10 rounded-2xl border border-[#25D366]/20 text-[#25D366]">
-                        <span class="font-black text-xs uppercase italic">WhatsApp Group</span>
-                        <i data-lucide="message-circle"></i>
-                    </a>
-                    <a href="#" class="flex items-center justify-between p-5 bg-[#FF0000]/10 rounded-2xl border border-[#FF0000]/20 text-[#FF0000]">
-                        <span class="font-black text-xs uppercase italic">Tutorials</span>
-                        <i data-lucide="youtube"></i>
-                    </a>
-                </div>
-            </div>
-            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase py-4">Back</button>
-        </div>
-
-        <div id="profilePage" class="hidden space-y-6 text-center">
-            <div class="glass p-10 rounded-[4rem] relative overflow-hidden">
-                <div class="absolute inset-0 bg-indigo-500/5"></div>
-                <img id="profileImg" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-24 h-24 rounded-[2rem] mx-auto mb-4 border-2 border-indigo-500 shadow-2xl relative">
-                <h3 id="profileName" class="text-2xl font-black italic">---</h3>
-                <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Verified AdsPay Partner</p>
-                
-                <div class="mt-8 pt-8 border-t border-white/5 space-y-4">
-                    <div class="flex justify-between text-[10px] font-bold uppercase px-4">
-                        <span class="text-gray-500">Account ID:</span>
-                        <span id="myReferCode" class="text-indigo-400 tracking-widest">---</span>
-                    </div>
-                    <div class="flex justify-between text-[10px] font-bold uppercase px-4">
-                        <span class="text-gray-500">Security:</span>
-                        <span class="text-emerald-500">Encrypted</span>
-                    </div>
-                </div>
-            </div>
-            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase">Return Home</button>
-        </div>
-
-        <div id="addBalancePage" class="hidden glass p-8 rounded-[3rem] space-y-6">
-            <h2 class="text-2xl font-black italic text-center uppercase">Deposit</h2>
-            <div class="bg-indigo-500/10 p-5 rounded-3xl border border-indigo-500/20">
-                <p class="text-[10px] text-indigo-300 font-bold uppercase mb-1">Admin Number (Personal)</p>
-                <p class="text-xl font-black tracking-widest">017XXXXXXXX</p>
-            </div>
-            <input type="number" id="depAmt" placeholder="Amount" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold">
-            <input type="text" id="trxid" placeholder="Transaction ID (TrxID)" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold uppercase">
-            <button onclick="handleDeposit()" class="w-full btn-grad p-5 rounded-2xl font-black uppercase tracking-widest">Submit Transaction</button>
-            <button onclick="showPage('home')" class="w-full text-center text-[10px] text-gray-500 font-black uppercase">Cancel</button>
-        </div>
-
     </div>
 
-    <script>
-        // CONFIG - আপনার Firebase Info
+    <header class="sticky top-0 z-50 glass p-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <h1 class="logo-stylus">ADSPAY HUP</h1>
+            <button onclick="checkAdminAccess()" class="text-slate-500 hover:text-blue-400 transition ml-2">
+                <i class="fas fa-shield-halved"></i>
+            </button>
+        </div>
+        <div class="text-right">
+            <p id="header-time" class="text-[10px] text-blue-400 font-mono font-bold"></p>
+            <p id="top-balance" class="text-lg font-bold text-emerald-400">৳0.00</p>
+        </div>
+    </header>
+
+    <div class="marquee-container py-1 overflow-hidden">
+        <marquee id="main-news" class="text-xs font-bold text-blue-300">
+            Welcome to Adspay Hup AI! Protidini income barate AI Mentor-er poramorsho nin.
+        </marquee>
+    </div>
+
+    <main class="p-4">
+        <div id="home" class="page active space-y-5">
+            <div class="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 rounded-3xl shadow-2xl relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-white/70 text-sm">Total Earnings</p>
+                    <h2 id="home-total-bal" class="text-4xl font-black mt-1">৳0.00</h2>
+                    <div class="flex gap-4 mt-4">
+                        <div class="bg-black/20 px-3 py-1 rounded-lg text-[10px]">Ads: <span id="home-ad-bal" class="text-emerald-300">৳0.00</span></div>
+                        <div class="bg-black/20 px-3 py-1 rounded-lg text-[10px]">Tasks: <span id="home-task-bal" class="text-yellow-300">৳0.00</span></div>
+                    </div>
+                </div>
+                <i class="fas fa-coins absolute -right-4 -bottom-4 text-8xl text-white/5 rotate-12"></i>
+            </div>
+
+            <button onclick="askAIMentor()" class="w-full ai-glow bg-slate-900 p-4 rounded-2xl flex items-center justify-between group transition">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-violet-600 to-fuchsia-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class="fas fa-sparkles"></i>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-bold text-sm text-violet-300">Ask AI Mentor ✨</h4>
+                        <p class="text-[10px] text-slate-500">Income baranor strategy janun</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-slate-600 group-hover:translate-x-1 transition"></i>
+            </button>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="showPage('deposit')" class="bg-emerald-600/20 border border-emerald-500/30 p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-emerald-400">
+                    <i class="fas fa-plus-circle"></i> Deposit
+                </button>
+                <button onclick="showPage('wallet')" class="bg-blue-600/20 border border-blue-500/30 p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-blue-400">
+                    <i class="fas fa-arrow-up-from-bracket"></i> Withdraw
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="startVideoTask()" class="w-full bg-slate-800/40 p-4 rounded-2xl border border-white/5 flex items-center justify-between hover:bg-slate-800 transition">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center text-red-400">
+                            <i class="fas fa-play-circle text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-bold text-sm">Watch Video Ads</h4>
+                            <p class="text-[10px] text-slate-400">Time: 30s</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-emerald-400 font-bold text-xs" id="label-ad-reward">+৳2.00</div>
+                </button>
+
+                <button onclick="startPremiumTask()" class="w-full bg-slate-800/40 p-4 rounded-2xl border border-white/5 flex items-center justify-between hover:bg-slate-800 transition">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400">
+                            <i class="fas fa-star text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-bold text-sm">Premium Task ✨</h4>
+                            <p class="text-[10px] text-slate-400">AI Powered Reward</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-amber-400 font-bold text-xs" id="label-task-reward">+৳5.00</div>
+                </button>
+            </div>
+
+            <div class="glass-card p-5 rounded-3xl space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400">AI Global Update</h3>
+                    <span class="text-[9px] bg-red-600 px-2 py-0.5 rounded-full animate-pulse">LIVE</span>
+                </div>
+                <div id="ai-news-feed" class="text-xs text-slate-300 leading-relaxed italic">
+                    Fetching latest updates via Gemini...
+                </div>
+            </div>
+
+            <footer class="text-center py-6">
+                <p class="text-[10px] tracking-widest font-bold uppercase opacity-30">© 2025 Adspay Hup Enterprise AI</p>
+                <div class="mt-4 flex flex-col items-center gap-1">
+                    <span class="text-[8px] text-slate-500">Authorized Signature</span>
+                    <span class="signature-font text-xl text-blue-400">Sakib Madbor</span>
+                </div>
+            </footer>
+        </div>
+
+        </main>
+
+    <nav class="fixed bottom-0 inset-x-0 glass h-20 px-4 flex items-center justify-around z-50">
+        <button onclick="showPage('home')" class="nav-btn flex flex-col items-center gap-1 text-slate-400 active">
+            <i class="fas fa-house-chimney"></i><span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button onclick="showPage('affiliate')" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-users-viewfinder"></i><span class="text-[10px] font-bold">Refer</span>
+        </button>
+        <button onclick="showPage('deposit')" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-circle-plus"></i><span class="text-[10px] font-bold">Deposit</span>
+        </button>
+        <button onclick="showPage('support')" class="nav-btn flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-circle-user"></i><span class="text-[10px] font-bold">Profile</span>
+        </button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Sothik Config bosano holo
         const firebaseConfig = {
             apiKey: "AIzaSyATr7aDNNsydceq_Z_5SuW4gIyFchPEm4A",
             authDomain: "adspay-hup.firebaseapp.com",
@@ -208,130 +211,61 @@
             projectId: "adspay-hup",
             storageBucket: "adspay-hup.firebasestorage.app",
             messagingSenderId: "250165529622",
-            appId: "1:250165529622:web:35f1307b0acafb182bf937"
+            appId: "1:250165529622:web:57ed75a9e9dd23b42bf937",
+            measurementId: "G-DQ9MWB0QN5"
         };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = 'adspay-hup-pro-v1';
+        const apiKey = "AIzaSyDHkr5a7OnGzy8Q_qJzy8qxcmBMkehGq58"; // Apnar deya API Key
 
-        let isLogin = true;
-        let selectedMethod = 'Bkash';
+        let userState = null;
+        let userData = { balance: 0, ad_balance: 0, task_balance: 0, referCount: 0, referBonus: 0 };
 
-        // UI ACTIONS
-        function toggleAuth() {
-            isLogin = !isLogin;
-            document.getElementById('authTitle').innerText = isLogin ? "Welcome Back" : "Join the Elite";
-            document.getElementById('mainBtn').innerText = isLogin ? "Login" : "Sign Up";
-            document.getElementById('signupExtra').classList.toggle('hidden');
-        }
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userState = user;
+                const userRef = doc(db, 'artifacts', appId, 'users', user.uid, 'account', 'data');
+                const snap = await getDoc(userRef);
+                if (!snap.exists()) await setDoc(userRef, { uid: user.uid, balance: 0, ad_balance: 0, task_balance: 0, referCount: 0, referBonus: 0 });
 
-        function showPage(p) {
-            ['homePage','withdrawPage','supportPage','affiliatePage','profilePage','addBalancePage'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
-            document.getElementById(p + 'Page').classList.remove('hidden');
-            window.scrollTo(0,0);
-        }
-
-        function setMethod(m) {
-            selectedMethod = m;
-            document.getElementById('btnBkash').style.background = m === 'Bkash' ? 'rgba(99, 102, 241, 0.2)' : 'transparent';
-            document.getElementById('btnBkash').style.borderColor = m === 'Bkash' ? '#6366f1' : 'rgba(255,255,255,0.1)';
-            document.getElementById('btnNagad').style.background = m === 'Nagad' ? 'rgba(99, 102, 241, 0.2)' : 'transparent';
-            document.getElementById('btnNagad').style.borderColor = m === 'Nagad' ? '#6366f1' : 'rgba(255,255,255,0.1)';
-        }
-
-        // AUTH LOGIC
-        function handleAuth() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            const rb = document.getElementById('referBy').value;
-            if(!e || !p) return alert("Enter Details");
-
-            if(isLogin) {
-                auth.signInWithEmailAndPassword(e,p).catch(err => alert(err.message));
-            } else {
-                auth.createUserWithEmailAndPassword(e,p).then(res => {
-                    const code = Math.random().toString(36).substring(2,7).toUpperCase();
-                    db.ref('users/' + res.user.uid).set({
-                        email: e, balance: 0, myReferCode: code, referBy: rb || "none", affEarnings: 0, refCount: 0, level: 1
-                    });
-                    if(rb) giveReferBonus(rb.toUpperCase());
-                }).catch(err => alert(err.message));
-            }
-        }
-
-        function giveReferBonus(code) {
-            db.ref('users').orderByChild('myReferCode').equalTo(code).once('value', s => {
-                if(s.exists()) {
-                    const uid = Object.keys(s.val())[0];
-                    db.ref('users/' + uid + '/balance').transaction(b => (b || 0) + 10);
-                    db.ref('users/' + uid + '/refCount').transaction(c => (c || 0) + 1);
-                    db.ref('users/' + uid + '/affEarnings').transaction(a => (a || 0) + 10);
-                }
-            });
-        }
-
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                document.getElementById('authSection').classList.add('hidden');
-                document.getElementById('mainSection').classList.remove('hidden');
-                document.getElementById('userDisplay').innerText = user.email.split('@')[0].toUpperCase();
-                document.getElementById('profileName').innerText = user.email.split('@')[0].toUpperCase();
-                
-                db.ref('users/' + user.uid).on('value', snap => {
-                    const d = snap.val();
-                    if(d) {
-                        document.getElementById('balance').innerText = (d.balance || 0).toFixed(2);
-                        document.getElementById('myReferCode').innerText = d.myReferCode;
-                        document.getElementById('affComm').innerText = (d.affEarnings || 0).toFixed(2);
-                        document.getElementById('affRefers').innerText = d.refCount || 0;
-                        document.getElementById('affLink').innerText = window.location.origin + "/?ref=" + d.myReferCode;
-                    }
+                onSnapshot(userRef, (d) => {
+                    userData = d.data();
+                    const b = userData.balance || 0;
+                    document.getElementById('top-balance').innerText = `৳${b.toFixed(2)}`;
+                    document.getElementById('home-total-bal').innerText = `৳${b.toFixed(2)}`;
+                    document.getElementById('home-ad-bal').innerText = `৳${(userData.ad_balance || 0).toFixed(2)}`;
+                    document.getElementById('home-task-bal').innerText = `৳${(userData.task_balance || 0).toFixed(2)}`;
                 });
-            } else {
-                document.getElementById('authSection').classList.remove('hidden');
-                document.getElementById('mainSection').classList.add('hidden');
-            }
+            } else { signInAnonymously(auth); }
         });
 
-        // EARNINGS
-        function watchAd() {
-            alert("Streaming Ad... Get ৳ 2.50 Reward!");
-            db.ref('users/' + auth.currentUser.uid + '/balance').transaction(b => (b || 0) + 2.5);
-        }
+        window.callGemini = async (prompt) => {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })});
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "AI offline.";
+            } catch (e) { return "Error connecting to AI."; }
+        };
 
-        function handleWithdraw() {
-            const amt = parseFloat(document.getElementById('wAmt').value);
-            const ph = document.getElementById('wPh').value;
-            if(amt < 50) return alert("Min Withdraw 50 TK");
-            db.ref('users/' + auth.currentUser.uid + '/balance').get().then(s => {
-                if(s.val() >= amt) {
-                    db.ref('withdraws').push({ uid: auth.currentUser.uid, email: auth.currentUser.email, amt, ph, method: selectedMethod, status: 'pending', time: Date.now() });
-                    db.ref('users/' + auth.currentUser.uid + '/balance').set(s.val() - amt);
-                    alert("Request Placed Successfully!"); showPage('home');
-                } else alert("Insufficient Balance");
-            });
-        }
+        window.askAIMentor = async () => {
+            document.getElementById('ai-mentor-box').style.display = 'flex';
+            const advice = await callGemini(`User has ৳${userData.balance}. Give Bengali tips to earn more.`);
+            document.getElementById('ai-response').innerText = advice;
+        };
 
-        function handleDeposit() {
-            const amt = document.getElementById('depAmt').value;
-            const trx = document.getElementById('trxid').value;
-            if(!amt || !trx) return alert("Enter Deposit Data");
-            db.ref('deposits').push({ uid: auth.currentUser.uid, email: auth.currentUser.email, amt, trx, status: 'pending' });
-            alert("Deposit submitted! Admin will verify soon.");
-            showPage('home');
-        }
+        window.showPage = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        };
 
-        function copyAffLink() {
-            navigator.clipboard.writeText(document.getElementById('affLink').innerText);
-            alert("Invitation Link Copied!");
-        }
-
-        function logout() { auth.signOut(); }
-        
-        lucide.createIcons();
-        setMethod('Bkash');
+        window.closeMentor = () => document.getElementById('ai-mentor-box').style.display = 'none';
+        setInterval(() => { document.getElementById('header-time').innerText = new Date().toLocaleTimeString(); }, 1000);
     </script>
 </body>
 </html>
