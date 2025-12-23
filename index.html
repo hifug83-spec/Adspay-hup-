@@ -21,45 +21,43 @@
         .page.active { display: block; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .btn-grad { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); }
-        input, select { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; }
-        .nav-btn { transition: 0.2s; cursor: pointer; }
+        input, select { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; margin-bottom: 10px; }
+        .nav-btn { cursor: pointer; transition: 0.3s; }
     </style>
 </head>
 <body>
 
     <header class="sticky top-0 z-50 glass p-4 flex justify-between items-center">
-        <div onclick="checkAdmin()" style="cursor: pointer;">
-            <h1 class="text-xl font-black text-blue-500">ADSPAY HUP</h1>
-            <p id="live-clock" class="text-[9px] text-slate-400 font-mono"></p>
+        <div onclick="adminLogin()" style="cursor: pointer;">
+            <h1 class="text-xl font-black text-blue-500 tracking-tighter">ADSPAY HUP</h1>
+            <p id="live-time" class="text-[9px] text-slate-400 font-mono"></p>
         </div>
         <div class="text-right">
-            <p id="top-balance" class="text-emerald-400 font-bold">৳0.00</p>
-            <p id="user-id-display" class="text-[8px] text-slate-500 uppercase"></p>
+            <p id="top-bal" class="text-emerald-400 font-bold">৳0.00</p>
+            <p id="u-id" class="text-[8px] text-slate-500 uppercase"></p>
         </div>
     </header>
 
     <div class="bg-blue-600/10 border-b border-blue-500/20 py-1.5 overflow-hidden">
-        <marquee id="news-ticker" class="text-[11px] font-medium text-blue-300">📢 Loading system news...</marquee>
+        <marquee id="news-ticker" class="text-[11px] font-medium text-blue-300">Welcome to Adspay Hup AI!</marquee>
     </div>
 
     <main class="p-4 space-y-4">
         
         <div id="home" class="page active space-y-4">
             <div class="glass-card p-6 bg-gradient-to-br from-blue-600/20 to-indigo-600/20">
-                <p class="text-slate-400 text-xs">Total Balance</p>
-                <h2 id="home-balance" class="text-4xl font-black">৳0.00</h2>
+                <p class="text-slate-400 text-xs">Available Balance</p>
+                <h2 id="home-bal" class="text-4xl font-black">৳0.00</h2>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="showPage('ad-tasks')" class="glass-card p-5 text-center border-blue-500/20">
                     <i class="fas fa-play-circle text-2xl text-blue-500 mb-2"></i>
                     <p class="text-xs font-bold uppercase">Ad Tasks</p>
-                    <span class="text-[8px] opacity-60">15 Ads = 2 TK</span>
                 </button>
                 <button onclick="showPage('special-tasks')" class="glass-card p-5 text-center border-purple-500/20">
-                    <i class="fas fa-tasks text-2xl text-purple-500 mb-2"></i>
-                    <p class="text-xs font-bold uppercase">Special Tasks</p>
-                    <span class="text-[8px] opacity-60">Custom Jobs</span>
+                    <i class="fas fa-star text-2xl text-purple-500 mb-2"></i>
+                    <p class="text-xs font-bold uppercase">Job Tasks</p>
                 </button>
             </div>
 
@@ -71,16 +69,16 @@
         </div>
 
         <div id="ad-tasks" class="page space-y-4">
-            <h3 class="text-lg font-bold">Watch Ads</h3>
+            <h3 class="text-lg font-bold">Watch Ads (15 Required)</h3>
             <div class="glass-card p-8 text-center space-y-4">
-                <div id="ad-count-display" class="text-2xl font-black text-blue-500">0 / 15</div>
-                <button onclick="watchVideoAd()" class="w-full btn-grad py-4 rounded-xl font-bold">CLICK TO WATCH AD</button>
+                <h1 id="ad-count" class="text-3xl font-black text-blue-500">0/15</h1>
+                <button onclick="watchVideoAd()" class="w-full btn-grad py-4 rounded-xl font-bold">WATCH VIDEO AD</button>
             </div>
         </div>
 
         <div id="special-tasks" class="page space-y-4">
-            <h3 class="text-lg font-bold">YouTube & Social Tasks</h3>
-            <div id="social-task-container" class="space-y-3"></div>
+            <h3 class="text-lg font-bold">Special Job Tasks</h3>
+            <div id="job-list" class="space-y-3"></div>
         </div>
 
         <div id="wallet" class="page space-y-4">
@@ -88,47 +86,48 @@
                 <button onclick="toggleWallet('dep')" class="flex-1 py-3 rounded-xl bg-blue-600 font-bold text-xs">ADD MONEY</button>
                 <button onclick="toggleWallet('wit')" class="flex-1 py-3 rounded-xl bg-slate-800 font-bold text-xs">WITHDRAW</button>
             </div>
-
-            <div id="dep-section" class="glass-card p-5 space-y-3">
-                <div class="bg-blue-600/20 p-3 rounded-lg border border-blue-500/30">
-                    <p class="text-[10px] text-blue-300">Send Payment to (Bkash/Nagad):</p>
-                    <p id="display-admin-num" class="text-lg font-bold text-white tracking-widest">---</p>
-                </div>
-                <input id="dep-amt" type="number" placeholder="Enter Amount">
-                <input id="dep-trx" type="text" placeholder="Transaction ID (TrxID)">
-                <button onclick="submitDep()" class="w-full btn-grad py-3 rounded-xl font-bold">Submit Payment</button>
+            <div id="dep-sec" class="glass-card p-5 space-y-3">
+                <p class="text-xs text-blue-300">Bkash/Nagad Number: <span id="admin-num-show" class="font-bold text-white underline"></span></p>
+                <input id="dep-amt" type="number" placeholder="Amount">
+                <input id="dep-trx" type="text" placeholder="TrxID">
+                <button onclick="submitDep()" class="w-full btn-grad py-3 rounded-xl font-bold">SUBMIT</button>
             </div>
-
-            <div id="wit-section" class="hidden glass-card p-5 space-y-3">
-                <input id="wit-num" type="number" placeholder="Recv Number">
-                <input id="wit-amt" type="number" placeholder="Min ৳20">
-                <button onclick="submitWit()" class="w-full bg-red-600 py-3 rounded-xl font-bold">Submit Withdraw</button>
+            <div id="wit-sec" class="hidden glass-card p-5 space-y-3">
+                <input id="wit-num" type="number" placeholder="Number">
+                <input id="wit-amt" type="number" placeholder="Min 20">
+                <button onclick="submitWit()" class="w-full bg-red-600 py-3 rounded-xl font-bold">WITHDRAW</button>
             </div>
         </div>
 
         <div id="profile" class="page space-y-4">
             <div class="glass-card p-6 text-center">
-                <i class="fas fa-user-circle text-5xl text-blue-500 mb-2"></i>
-                <p id="prof-id" class="text-[10px] opacity-50"></p>
+                <div class="w-16 h-16 bg-blue-600 rounded-full mx-auto mb-3 flex items-center justify-center font-bold">User</div>
+                <p id="prof-id" class="text-[10px] opacity-40"></p>
                 <h2 id="prof-bal" class="text-2xl font-bold text-emerald-400 mt-2">৳0.00</h2>
             </div>
-            <div class="glass-card p-4 space-y-4 text-sm">
-                <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                    <span>Referral Link</span>
-                    <button onclick="copyRef()" class="text-blue-400 text-xs font-bold">Copy</button>
-                </div>
-                <input id="ref-input" readonly type="text" class="text-[10px] opacity-50">
+            <div class="glass-card p-4 space-y-2">
+                <p class="text-xs font-bold">Referral Link:</p>
+                <input id="ref-link" readonly type="text" class="text-[10px]">
+                <button onclick="copyRef()" class="w-full bg-slate-800 py-2 rounded-lg text-xs">Copy Link</button>
             </div>
         </div>
 
         <div id="admin" class="page space-y-4">
-            <h3 class="text-xl font-bold text-red-500">Master Control</h3>
-            <div class="glass-card p-4 space-y-3">
-                <input id="adm-news" type="text" placeholder="Site News">
-                <input id="adm-num" type="text" placeholder="Admin Number">
-                <button onclick="saveAdminSettings()" class="w-full bg-emerald-600 py-2 rounded-lg font-bold text-xs">SAVE SETTINGS</button>
+            <h3 class="text-xl font-bold text-red-500 border-b border-red-500/20 pb-2">Admin Control</h3>
+            <div class="glass-card p-4 space-y-2">
+                <p class="text-xs font-bold text-blue-400">Update System Settings</p>
+                <input id="adm-news-in" type="text" placeholder="Site News">
+                <input id="adm-num-in" type="text" placeholder="Admin Number">
+                <button onclick="saveSettings()" class="w-full bg-emerald-600 py-2 rounded-lg font-bold text-xs">SAVE SETTINGS</button>
             </div>
-            <div id="admin-req-list" class="space-y-2"></div>
+            <div class="glass-card p-4 space-y-2">
+                <p class="text-xs font-bold text-purple-400">Add New Task</p>
+                <input id="task-title" type="text" placeholder="Task Name (YouTube Subscribe)">
+                <input id="task-link" type="text" placeholder="Task URL">
+                <input id="task-reward" type="number" placeholder="Reward (৳)">
+                <button onclick="addTask()" class="w-full bg-purple-600 py-2 rounded-lg font-bold text-xs">POST TASK</button>
+            </div>
+            <div id="req-list" class="space-y-2"></div>
         </div>
 
     </main>
@@ -136,7 +135,7 @@
     <nav class="fixed bottom-0 inset-x-0 glass h-20 flex justify-around items-center z-50 rounded-t-3xl border-t border-white/5">
         <div onclick="showPage('home')" class="nav-btn flex flex-col items-center gap-1 text-blue-500"><i class="fas fa-home"></i><span class="text-[10px]">Home</span></div>
         <div onclick="showPage('wallet')" class="nav-btn flex flex-col items-center gap-1 text-slate-500"><i class="fas fa-wallet"></i><span class="text-[10px]">Wallet</span></div>
-        <div onclick="showPage('profile')" class="nav-btn flex flex-col items-center gap-1 text-slate-500"><i class="fas fa-user"></i><span class="text-[10px]">Profile</span></div>
+        <div onclick="showPage('profile')" class="nav-btn flex flex-col items-center gap-1 text-slate-500"><i class="fas fa-user-circle"></i><span class="text-[10px]">Profile</span></div>
     </nav>
 
     <script type="module">
@@ -159,112 +158,67 @@
         let currentUser = null;
         let adCount = 0;
 
-        // --- AUTH & REAL-TIME SYNC ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                document.getElementById('user-id-display').innerText = `ID: ${user.uid.slice(0,8)}`;
-                document.getElementById('prof-id').innerText = `ID: ${user.uid}`;
-                document.getElementById('ref-input').value = `https://adspayhup.com/?ref=${user.uid}`;
-                
+                document.getElementById('u-id').innerText = `ID: ${user.uid.slice(0,8)}`;
+                document.getElementById('prof-id').innerText = `Full ID: ${user.uid}`;
+                document.getElementById('ref-link').value = `https://adspayhup.com/?ref=${user.uid}`;
                 onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid), d => {
                     const b = d.data()?.balance || 0;
-                    document.getElementById('top-balance').innerText = `৳${b.toFixed(2)}`;
-                    document.getElementById('home-balance').innerText = `৳${b.toFixed(2)}`;
+                    document.getElementById('top-bal').innerText = `৳${b.toFixed(2)}`;
+                    document.getElementById('home-bal').innerText = `৳${b.toFixed(2)}`;
                     document.getElementById('prof-bal').innerText = `৳${b.toFixed(2)}`;
                 });
             } else { signInAnonymously(auth); }
         });
 
-        // --- NAVIGATION (Ads Bondho) ---
+        // Icon click korle ads bondho, shudhu page change
         window.showPage = (id) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
-            // Highlight icon
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-blue-500', 'text-slate-500'));
-            // logic for icon highlight can be added here
         };
 
-        window.toggleWallet = (type) => {
-            document.getElementById('dep-section').classList.toggle('hidden', type !== 'dep');
-            document.getElementById('wit-section').classList.toggle('hidden', type !== 'wit');
-        };
-
-        // --- AD SYSTEM ---
         window.watchVideoAd = () => {
             if(typeof show_10363640 === 'function') {
                 show_10363640().then(async () => {
                     adCount++;
-                    document.getElementById('ad-count-display').innerText = `${adCount} / 15`;
+                    document.getElementById('ad-count').innerText = `${adCount}/15`;
                     if(adCount >= 15) {
                         await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), { balance: increment(2.00) });
-                        alert("15 Ads Done! 2 TK Added.");
-                        adCount = 0;
-                        document.getElementById('ad-count-display').innerText = "0 / 15";
+                        alert("15 Ads Complete! 2 TK Added.");
+                        adCount = 0; document.getElementById('ad-count').innerText = "0/15";
                     }
-                }).catch(() => alert("Ad error"));
+                });
             }
         };
 
-        // --- ADMIN & SYSTEM DATA ---
         onSnapshot(doc(db, 'artifacts', appId, 'public', 'settings'), d => {
             const s = d.data() || {};
             document.getElementById('news-ticker').innerText = s.news || "Welcome!";
-            document.getElementById('display-admin-num').innerText = s.adminNum || "Not Set";
+            document.getElementById('admin-num-show').innerText = s.adminNum || "01xxxxxxxxx";
         });
 
-        window.checkAdmin = () => { if(prompt("PIN:") === "2025") showPage('admin'); loadAdminRequests(); };
-
-        window.saveAdminSettings = async () => {
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'settings'), {
-                news: document.getElementById('adm-news').value,
-                adminNum: document.getElementById('adm-num').value
-            }, {merge: true});
-            alert("Saved!");
-        };
-
-        // --- DEPOSIT & WITHDRAW ---
-        window.submitDep = async () => {
-            const a = parseFloat(document.getElementById('dep-amt').value);
-            const t = document.getElementById('dep-trx').value;
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'requests'), { uid: currentUser.uid, amount: a, info: t, type: 'DEP' });
-            alert("Sent!");
-        };
-
-        window.submitWit = async () => {
-            const a = parseFloat(document.getElementById('wit-amt').value);
-            const n = document.getElementById('wit-num').value;
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'requests'), { uid: currentUser.uid, amount: a, info: n, type: 'WIT' });
-            alert("Sent!");
-        };
-
-        function loadAdminRequests() {
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'requests'), s => {
-                const l = document.getElementById('admin-req-list');
-                l.innerHTML = "";
-                s.forEach(d => {
-                    const data = d.data();
-                    l.innerHTML += `<div class="glass-card p-3 flex justify-between text-[10px]">
-                        <span>${data.type}: ৳${data.amount} (${data.info})</span>
-                        <button onclick="approveReq('${d.id}','${data.uid}',${data.amount},'${data.type}')" class="text-blue-400">Approve</button>
-                    </div>`;
-                });
+        onSnapshot(collection(db, 'artifacts', appId, 'public', 'tasks'), s => {
+            const list = document.getElementById('job-list'); list.innerHTML = "";
+            s.forEach(d => {
+                const t = d.data();
+                list.innerHTML += `<div class="glass-card p-4 flex justify-between items-center">
+                    <div><p class="text-xs font-bold">${t.title}</p><p class="text-[10px] text-emerald-400">Reward: ৳${t.reward}</p></div>
+                    <button onclick="window.open('${t.link}')" class="bg-blue-600 px-4 py-1 rounded text-[10px]">GO</button>
+                </div>`;
             });
-        }
+        });
 
-        window.approveReq = async (id, uid, amt, type) => {
-            if(type === 'DEP') await updateDoc(doc(db, 'artifacts', appId, 'users', uid), { balance: increment(amt) });
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'requests', id));
-            alert("Approved!");
+        window.adminLogin = () => { if(prompt("PIN:") === "2025") { showPage('admin'); loadReqs(); } };
+
+        window.saveSettings = async () => {
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'settings'), {
+                news: document.getElementById('adm-news-in').value,
+                adminNum: document.getElementById('adm-num-in').value
+            }, {merge: true});
+            alert("Updated!");
         };
 
-        window.copyRef = () => {
-            const i = document.getElementById('ref-input'); i.select();
-            navigator.clipboard.writeText(i.value); alert("Copied!");
-        };
-
-        setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleString(); }, 1000);
-    </script>
-</body>
-</html>
+        window.
